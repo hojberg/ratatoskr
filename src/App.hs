@@ -54,13 +54,14 @@ data Name
 data Model = Model
   { stories :: RemoteData String [Story]
   , selectedStoryId :: Maybe T.Text
+  , message :: Maybe String
   }
 
 
 initialState :: IO Model
 initialState = do
   stories <- loadStories
-  pure Model { selectedStoryId = Nothing, stories = stories }
+  pure Model { selectedStoryId = Nothing, stories = stories, message = Nothing }
 
 
 getJSON :: String -> IO B.ByteString
@@ -121,19 +122,21 @@ selectPreviousStory model =
 openStory :: Model -> IO Model
 openStory model =
   let
-    story = 
-      (selectedStoryId model) >>= \id ->
-        case (stories model) of 
-        _ -> Nothing
-        Success stories' -> Story.storyById stories' id
+    storyById id =
+      case (stories model) of 
+      Success stories' -> Story.storyById stories' id
+      _ -> Nothing
+
+    story =
+      selectedStoryId model >>= storyById
 
     open url =
-      createProcess (proc ("open " ++ T.unpack url) [])
+      createProcess (proc "open" [T.unpack url])
   in
     case story of
-      Nothing -> pure model
+      Nothing -> pure (model { message = Just "Can't find story" })
       Just s -> do
-        fmap (\r -> model) (open (storyUrl s))
+        fmap (\_ -> model ) (open (url s))
 
 
 update :: Model -> BrickEvent Name e -> EventM Name (Next Model)
@@ -183,8 +186,13 @@ workspace model =
 
 cmdline :: Model -> Widget Name
 cmdline model =
+  let
+    cmd = case (message model) of
+      Nothing -> "Awaiting command"
+      Just m -> m
+  in
   C.withBorderStyle BS.unicodeRounded . B.border $ C.vLimit 1 $
-          C.vBox [C.str "Awaiting command"]
+          C.vBox [C.str cmd]
 
 
 render :: Model -> [Widget Name]

@@ -39,7 +39,8 @@ indexOfStoryId (Just id) stories =
 storyById :: [Story] -> Text -> Maybe Story
 storyById stories storyId =
   let
-    finder s = sId s == storyId
+    finder s =
+      sId s == storyId
   in
     List.find finder stories
 
