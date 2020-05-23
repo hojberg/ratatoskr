@@ -60,3 +60,15 @@ dashed = "☒ "
 
 checked :: String
 checked = "☑ "
+
+lobsters :: String
+lobsters = 
+  " ┏━━━┓\
+\   ┃ L ┃\
+\   ┗━━━┛"
+
+hn :: String
+hn = 
+  " ┏━━━┓\
+\   ┃ Y ┃\
+\   ┗━━━┛"

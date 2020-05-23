@@ -12,39 +12,6 @@ data StoryId = StoryId String
 
 data Source = Lobsters
 
-data Story = Story { sId :: Text
-                   , title :: Text
-                   , storyUrl :: Text
-                   , url :: Text
-                   , description :: Text
-                   } deriving (Show, Eq)
-
-instance FromJSON Story where
-  parseJSON (Object v) =
-     Story <$> v .: "short_id"
-           <*> v .: "title"
-           <*> v .: "short_id_url"
-           <*> v .: "url"
-           <*> v .: "description"
-
-indexOfStoryId :: Maybe Text -> [Story] -> Maybe Int
-indexOfStoryId _       [] = Nothing
-indexOfStoryId Nothing _  = Nothing
-indexOfStoryId (Just id) stories =
-  let
-    finder s = sId s == id
-  in
-    List.find finder stories >>= (`elemIndex` stories)
-
-storyById :: [Story] -> Text -> Maybe Story
-storyById stories storyId =
-  let
-    finder s =
-      sId s == storyId
-  in
-    List.find finder stories
-
-
 {--
 data LobstersStory = LobstersStory {
   short_id: "vcx5vu",
@@ -72,3 +39,46 @@ data LobstersStory = LobstersStory {
   tags: [String]
 }
 --}
+
+data Author = Author { username :: Text
+                     , karma :: Int
+                     , isMod :: Bool
+                     }
+
+data Story = Story { sId :: Text
+                   , upvotes :: Int
+                   , downvotes :: Int
+                   , title :: Text
+                   , storyUrl :: Text
+                   , url :: Text
+                   , description :: Text
+                   } deriving (Show, Eq)
+
+instance FromJSON Story where
+  parseJSON (Object v) =
+     Story <$> v .: "short_id"
+           <*> v .: "upvotes"
+           <*> v .: "downvotes"
+           <*> v .: "title"
+           <*> v .: "short_id_url"
+           <*> v .: "url"
+           <*> v .: "description"
+
+indexOfStoryId :: Maybe Text -> [Story] -> Maybe Int
+indexOfStoryId _       [] = Nothing
+indexOfStoryId Nothing _  = Nothing
+indexOfStoryId (Just id) stories =
+  let
+    finder s = sId s == id
+  in
+    List.find finder stories >>= (`elemIndex` stories)
+
+storyById :: [Story] -> Text -> Maybe Story
+storyById stories storyId =
+  let
+    finder s =
+      sId s == storyId
+  in
+    List.find finder stories
+
+

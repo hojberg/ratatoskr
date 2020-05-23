@@ -152,8 +152,22 @@ update model evt = case evt of
 
 -- VIEW
 
+  {--
+let w = withAttr specificAttr $ str "foobar"
+    generalAttr = attrName "general"
+    specificAttr = attrName "general" <> attrName "specific"
+    myMap = attrMap defAttr [ (generalAttr, bg blue)
+                            , (specificAttr, fg white)
+                            ]--}
+
 formatStory :: Story -> String
-formatStory story = T.unpack (title story)
+formatStory story = 
+  let
+    upvotes' = "⯅ " ++ show (upvotes story)
+    title' = T.unpack (title story)
+  in
+    upvotes' ++ " " ++ title'
+
 
 isStorySelected :: Maybe T.Text -> Story -> Bool
 isStorySelected Nothing           _    = False
@@ -161,15 +175,23 @@ isStorySelected (Just selectedId) story = sId story == selectedId
 
 storyRow :: Maybe T.Text -> Story -> Widget Name
 storyRow selectedStoryId story =
-  let selected = if isStorySelected selectedStoryId story then "█ " else "  "
+  let 
+    selected = if isStorySelected selectedStoryId story then "█ " else "  "
+    title' = T.unpack (title story)
+    upvotes' = show (upvotes story)
+    row = C.vBox [
+      C.hBox [C.str " ⯅ ", C.str " ", C.str title'],
+      C.hBox [C.str upvotes', C.str " ", C.str "author"] ]
 
-      row      = C.vBox
+        {--
+
+      row = C.vBox
         [ C.vLimit 1
         $  C.str
         $  selected
         ++ formatStory story
-        ++ " "
         ]
+        --}
   in  row
 
 workspace :: Model -> Widget Name
