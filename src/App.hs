@@ -179,19 +179,8 @@ storyRow selectedStoryId story =
     selected = if isStorySelected selectedStoryId story then "█ " else "  "
     title' = T.unpack (title story)
     upvotes' = show (upvotes story)
-    row = C.vBox [
-      C.hBox [C.str " ⯅ ", C.str " ", C.str title'],
-      C.hBox [C.str upvotes', C.str " ", C.str "author"] ]
+    row = C.vBox [C.hBox [C.str selected, C.str " ⯅ ", C.str upvotes', C.str " ", C.str title']]
 
-        {--
-
-      row = C.vBox
-        [ C.vLimit 1
-        $  C.str
-        $  selected
-        ++ formatStory story
-        ]
-        --}
   in  row
 
 workspace :: Model -> Widget Name
