@@ -4,6 +4,8 @@ module App where
 
 import Data.Aeson (decode)
 
+import Text.Printf
+
 import           Control.Monad.IO.Class
 import System.Process
 import           Brick.AttrMap                  ( AttrMap
@@ -152,23 +154,6 @@ update model evt = case evt of
 
 -- VIEW
 
-  {--
-let w = withAttr specificAttr $ str "foobar"
-    generalAttr = attrName "general"
-    specificAttr = attrName "general" <> attrName "specific"
-    myMap = attrMap defAttr [ (generalAttr, bg blue)
-                            , (specificAttr, fg white)
-                            ]--}
-
-formatStory :: Story -> String
-formatStory story = 
-  let
-    upvotes' = "⯅ " ++ show (upvotes story)
-    title' = T.unpack (title story)
-  in
-    upvotes' ++ " " ++ title'
-
-
 isStorySelected :: Maybe T.Text -> Story -> Bool
 isStorySelected Nothing           _    = False
 isStorySelected (Just selectedId) story = sId story == selectedId
@@ -176,9 +161,10 @@ isStorySelected (Just selectedId) story = sId story == selectedId
 storyRow :: Maybe T.Text -> Story -> Widget Name
 storyRow selectedStoryId story =
   let 
+    formatUpvotes x = printf "%03d" x
     selected = if isStorySelected selectedStoryId story then "█ " else "  "
     title' = T.unpack (title story)
-    upvotes' = show (upvotes story)
+    upvotes' = formatUpvotes (upvotes story)
     row = C.vBox [C.hBox [C.str selected, C.str " ⯅ ", C.str upvotes', C.str " ", C.str title']]
 
   in  row
