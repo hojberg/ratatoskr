@@ -161,11 +161,11 @@ isStorySelected (Just selectedId) story = sId story == selectedId
 storyRow :: Maybe T.Text -> Story -> Widget Name
 storyRow selectedStoryId story =
   let 
-    formatUpvotes x = printf "%3d" x
-    selected = if isStorySelected selectedStoryId story then "█ " else "  "
+    formatUpvotes x = printf "%2d" x
+    selected = if isStorySelected selectedStoryId story then "▌" else " "
     title' = T.unpack (title story)
     upvotes' = formatUpvotes (upvotes story)
-    row = C.vBox [C.hBox [C.str selected, C.str " ⯅ ", C.str upvotes', C.str " ", C.str title']]
+    row = C.vBox [C.hBox [C.str selected, C.str " ⯅ ", C.str upvotes', C.str "▕ ", C.str title']]
 
   in  row
 
