@@ -161,7 +161,7 @@ isStorySelected (Just selectedId) story = sId story == selectedId
 storyRow :: Maybe T.Text -> Story -> Widget Name
 storyRow selectedStoryId story =
   let 
-    formatUpvotes x = printf "%2d" x
+    formatUpvotes x = printf "%3d" x
     selected = if isStorySelected selectedStoryId story then "▌" else " "
     title' = T.unpack (title story)
     upvotes' = formatUpvotes (upvotes story)
